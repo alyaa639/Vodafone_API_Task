@@ -1,0 +1,8 @@
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="API Test Suite">
+    <test name="brands">
+        <classes>
+            <class name="brands.TestRunner"/>
+        </classes>
+    </test>
+</suite>
