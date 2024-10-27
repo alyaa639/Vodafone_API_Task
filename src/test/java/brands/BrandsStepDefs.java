@@ -17,7 +17,7 @@ import static org.testng.Assert.assertEquals;
 
 public class BrandsStepDefs {
     private Response response;
-    private String expectedBrandName; // Variable to hold the expected brand name
+    private String expectedBrandName;
 
     @Given("the API endpoint brands is available")
     public void theAPIEndpointBrandsIsAvailable() {
@@ -25,15 +25,13 @@ public class BrandsStepDefs {
 
     @When("I send a GET to endpoint request to brands")
     public void iSendAGETToRequestToBrands() {
-        response = ApiMethods.get(Config.getEndpoint());
+        response = ApiMethods.get(Config.getBaseUri(),Config.getEndpoint());
     }
 
     @Then("I should receive a {string} response")
     public void iShouldReceiveAResponse(String expectedStatus) {
         int actualStatusCode = response.getStatusCode();
         int expectedStatusCode = Integer.parseInt(expectedStatus);
-
-        // If the assertion fails, it will throw an exception
         assertEquals(actualStatusCode, expectedStatusCode,
                 "Expected status: " + expectedStatus + " but got: " + actualStatusCode);
 
@@ -59,21 +57,36 @@ public class BrandsStepDefs {
         }
     }
 
-    @Then("I send a GET to endpoint request to return specific brand")
-    public void iSendAGETToEndpointRequestToReturnSpecificBrand() {
-        response = ApiMethods.getWithQueryParams(Config.getqueyparamEndpoint());
+    @When("I send a GET to endpoint request to return specific brand with ID {string}")
+    public void iSendAGETToEndpointRequestToReturnSpecificBrandWithID( String id) {
+        response = ApiMethods.get(Config.getBaseUri(),Config.getEndpoint()+id);
     }
-
 
 
     @Then("The brand name should match the {string}")
     public void theBrandNameShouldMatchThe(String expectedBrandName) {
-        this.expectedBrandName = expectedBrandName; // Store the expected value
-
-        // Extract brand name from the response
-        String actualBrandName = response.jsonPath().getString("name"); // Assuming the JSON structure has a field 'name'
-
-        // Assertion to check if the actual brand name matches the expected brand name
+        this.expectedBrandName = expectedBrandName;
+        String actualBrandName = response.jsonPath().getString("name");
         Assert.assertEquals(actualBrandName,expectedBrandName , "Brand name does not match"+expectedBrandName);
+    }
+
+    @When("I send a post request with name {string} and description {string}")
+    public void iSendAPostRequestWithNameAndDescription(String name, String description) {
+        String requestBody = "{ \"name\": \"" + name + "\", \"description\": \"" + description + "\" }";
+        response = ApiMethods.post(Config.getEndpoint() ,requestBody );
+    }
+
+    @Then("error message {string} should be returned")
+    public void errorMessageShouldBeReturned(String message ) {
+        String responseBody = response.getBody().asString();
+        System.out.println(responseBody);
+        Assert.assertEquals(responseBody , message);
+    }
+
+
+    @When("I send a Delete to endpoint request to return specific brand with ID {string}")
+    public void iSendADeleteToEndpointRequestToReturnSpecificBrandWithID(String id) {
+        response = ApiMethods.delete(Config.getBaseUri(),Config.getEndpoint()+id);
+
     }
 }

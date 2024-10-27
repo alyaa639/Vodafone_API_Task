@@ -1,11 +1,9 @@
 package apitesting.util;
-
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
 
 public class ApiMethods {
     public static Response post(String endpoint, String body) {
-        // Create a map to store headers
         return RestAssured
                 .given()
                 .baseUri(Config.getBaseUri())
@@ -13,33 +11,33 @@ public class ApiMethods {
                 .body(body)
                 .post(endpoint)
                 .then()
-                .log().all() // Log all response details
+                .log().all()
                 .extract()
                 .response();
     }
 
-    public static Response get(String endpoint) {
+    public static Response get(String baseURI,String endpoint) {
         return RestAssured
                 .given()
-                .baseUri(Config.getBaseUri())
-                .get(Config.getEndpoint())
+                .baseUri(baseURI)
+                .get(endpoint)
                 .then()
-                .log().all() // Log all response details
+                .log().all()
                 .extract()
                 .response();
     }
-
-
-    public static Response getWithQueryParams(String endpointWithQueryparam) {
+    public static Response delete(String baseURI,String endpoint ) {
         return RestAssured
                 .given()
-                .baseUri(Config.getBaseUri())
-                .get(Config.getqueyparamEndpoint())
+                .baseUri(baseURI)
+                .delete(endpoint)
                 .then()
-                .log().all() // Log all response details
+                .log().all()
                 .extract()
                 .response();
     }
 }
+
+
 
 
